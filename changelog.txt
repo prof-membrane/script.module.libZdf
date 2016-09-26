@@ -1,0 +1,28 @@
+1.1.0
+- Added preparation for external xmlservice
+- Added support for show name
+- Added support for channel name
+- Added support for episode numbers
+- Added support for season numbers
+- Added support for aired date
+1.0.6
+- Added subtitle support
+- Removed "Olympia 2016" special
+1.0.5
+- Added thumbnails to "Olympia 2016" special
+- Impoved show thumbnails
+1.0.4
+- Added "Olympia 2016" special
+- Removed "EM 2016" special
+1.0.3
+- Improved PVR support
+1.0.2
+- Added "EM 2016" special
+1.0.1
+- Limited "New"/"Most viewed" to 150 entries
+- Switched to akkumulative lists
+- Switched to HLS only
+- RTMP streams are disabled (for now)
+- Various other fixes and improvements
+1.0.0
+- Initial release
