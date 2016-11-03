@@ -29,14 +29,14 @@ channels = 	[
 
 def libZdfListMain():
 	l = []
-	l.append({'name':translation(31031), 'mode':'libZdfListPage', 'type': 'dir', 'url':'https://api.zdf.de/content/documents/meist-gesehen-100.json?profile=default'})
-	l.append({'name':translation(31032), 'mode':'libZdfListAZ', 'type': 'dir'})
-	l.append({'name':translation(31033), 'mode':'libZdfListDate', 'type': 'dir'})
-	l.append({'name':translation(31034), 'mode':'libZdfListPage', 'type': 'dir', 'url':'https://api.zdf.de/search/documents?q=%2A&contentTypes=category'})
-	l.append({'name':translation(31039), 'mode':'libZdfSearch',   'type': 'dir'})
+	l.append({'_name':translation(31031), 'mode':'libZdfListPage', 'type': 'dir', 'url':'https://api.zdf.de/content/documents/meist-gesehen-100.json?profile=default'})
+	l.append({'_name':translation(31032), 'mode':'libZdfListAZ', 'type': 'dir'})
+	l.append({'_name':translation(31033), 'mode':'libZdfListDate', 'type': 'dir'})
+	l.append({'_name':translation(31034), 'mode':'libZdfListPage', 'type': 'dir', 'url':'https://api.zdf.de/search/documents?q=%2A&contentTypes=category'})
+	l.append({'_name':translation(31039), 'mode':'libZdfSearch',   'type': 'dir'})
 	"""
-	l.append({'name':translation(31032), 'mode':'listLetters',    'type': 'dir'})
-	l.append({'name':translation(31035), 'mode':'xmlListPage', 'type': 'dir', 'url':'http://www.zdf.de/ZDFmediathek/xmlservice/web/themen'})
+	l.append({'_name':translation(31032), 'mode':'listLetters',    'type': 'dir'})
+	l.append({'_name':translation(31035), 'mode':'xmlListPage', 'type': 'dir', 'url':'http://www.zdf.de/ZDFmediathek/xmlservice/web/themen'})
 	"""
 	return l
 	
@@ -50,10 +50,8 @@ def libZdfListVideos():
 	return libZdfJsonParser.getVideos(params['url'])
 
 def libZdfPlay():
-	videoUrl = libZdfJsonParser.getVideoUrl(params['url'])
-	listitem = xbmcgui.ListItem(path=videoUrl)
-	xbmcplugin.setResolvedUrl(pluginhandle, True, listitem)
-
+	return libZdfJsonParser.getVideoUrl(params['url'])
+	
 def libZdfListDate():
 	libMediathek.populateDirDate('libZdfListDateChannels')
 	return []
@@ -86,7 +84,7 @@ def libZdfGetVideoHtml(url):
 	import _utils
 	import re
 	response = _utils.getUrl(url)
-	return libZdfJsonParser.getVideoUrl(re.compile('"content": "(.+?)"', re.DOTALL).findall(response)[0])
+	return libZdfJsonParser.getVideoUrl(re.compile('"contentUrl": "(.+?)"', re.DOTALL).findall(response)[0])
 
 def list():	
 	global params
@@ -96,7 +94,8 @@ def list():
 	
 	mode = params.get('mode','libZdfListMain')
 	if mode == 'libZdfPlay':
-		libZdfPlay()
+		libMediathek.play(libZdfPlay())
+		
 	else:
 		l = modes.get(mode,libZdfListMain)()
 		libMediathek.addEntries(l)

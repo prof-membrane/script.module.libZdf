@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import xbmc
 import json
-import _utils
+import libMediathek2
 #import dateutil.parser
 
 base = 'https://api.zdf.de'
 playerId = 'ngplayer_2_3'
 log = xbmc.log
+auth = '23a1db22b51b13162bd0b86b24e556c8c6b6272d reraeB'
+getheader = {'Api-Auth': auth[::-1]}
 
 def parsePage(url):
-	response = _utils.getUrl(url)
+	response = libMediathek2.getUrl(url,getheader)
 	j = json.loads(response)
 	xbmc.log('profile')
 	xbmc.log(j['profile'])
@@ -26,7 +28,7 @@ def parsePage(url):
 	else:
 		xbmc.log('Unknown profile: ' + j['profile'])
 def getAZ():
-	response = _utils.getUrl("https://api.zdf.de/content/documents/sendungen-100.json?profile=default")
+	response = libMediathek2.getUrl("https://api.zdf.de/content/documents/sendungen-100.json?profile=default",getheader)
 	j = json.loads(response)
 	letters = {}
 	l = []
@@ -151,10 +153,13 @@ def _chooseImage(teaserImageRef,isVideo=False):
 			return ''
 		
 def getVideoUrl(url):
-	response = _utils.getUrl(url)
+	d = {}
+	d['media'] = []
+	response = libMediathek2.getUrl(url,getheader)
 	j = json.loads(response)
 	for item in j['priorityList']:
 		if item['formitaeten'][0]['type'] == 'h264_aac_ts_http_m3u8_http':
 			for quality in item['formitaeten'][0]['qualities']:
 				if quality['quality'] == 'auto':
-					return quality['audio']['tracks'][0]['uri']
+					d['media'].append({'url':quality['audio']['tracks'][0]['uri'], 'type': 'video', 'stream':'HLS'})
+	return d
